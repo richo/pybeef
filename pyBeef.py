@@ -9,16 +9,6 @@
 import os
 import sys
 
-try:
-    # Hack to make this load properly on a mod_python webserver
-    from webapp_handle import serve_self
-    # I don't get why index = serve_self doesn't work..
-    def index(req):
-        return serve_self(req)
-except ImportError:
-    pass
-
-
 # TODO
 # - Make the parser more intuitive.
 #  The functions to actually construct the stack are probably neccesary, but
@@ -105,7 +95,6 @@ class bf(object):
         self.buf[self.pointer] = ord(sys.stdin.read(1))
 
 def main(args):
-    #cmds = '<>[]+-.,'
     obj = bf()
     fh = open(args[0], 'r')
     for line in fh:
