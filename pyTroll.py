@@ -17,6 +17,8 @@ import sys
 # - Have a crack at making it faster, and remove code dupes in __call__()
 # - Documentation?
 
+def noop(): pass
+
 def usage():
     pass
 class bf(object):
@@ -32,14 +34,16 @@ class bf(object):
         self.ref_stack = []
         self.current_loop = self.stack
         self.cmds = {
-                "<": lambda: self.current_loop.append(self.sh_left),
-                ">": lambda: self.current_loop.append(self.sh_right),
-                "+": lambda: self.current_loop.append(self.po_add),
-                "-": lambda: self.current_loop.append(self.po_sub),
-                ".": lambda: self.current_loop.append(self.po_out),
-                ",": lambda: self.current_loop.append(self.po_in),
-                "[": self.a_lo_enter,
-                "]": self.a_lo_exit
+                "ool": lambda: self.current_loop.append(self.sh_left),
+                "ooo": lambda: self.current_loop.append(self.sh_right),
+                "olo": lambda: self.current_loop.append(self.po_add),
+                "oll": lambda: self.current_loop.append(self.po_sub),
+                "loo": lambda: self.current_loop.append(self.po_out),
+                "lol": lambda: self.current_loop.append(self.po_in),
+                "llo": self.a_lo_enter,
+                "lll": self.a_lo_exit,
+                "tro": noop
+
             }
     def __call__(self):
         # This is basically the same logic, with a slight tweak
@@ -97,9 +101,14 @@ class bf(object):
 def main(args):
     obj = bf()
     fh = open(args[0], 'r')
+    buf = ""
     for line in fh:
         for char in line:
-            obj.push(char)
+            if len(buf) == 3:
+                obj.push(buf)
+                buf = ""
+            else:
+                buf += char
     obj()
 
 if __name__ == '__main__':
