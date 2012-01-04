@@ -1,7 +1,8 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
 # richo <richo@psych0tik.net>
 # '10 '11
 # This code is released into the public domain
+# Under the terms of the WTFPL or GPLv2 at your option
 
 # Credit/links/patches are appreciated though
 
@@ -79,7 +80,7 @@ class bf(object):
         self.current_loop = self.ref_stack.pop(-1)
 #
 # Really I could probably lambda these but it'd be unreadable
-# 
+#
     def sh_left(self):
         if self.pointer == 0:
             # This looks wrong at first, but remember that the pointer
