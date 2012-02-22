@@ -57,17 +57,17 @@ class BF(object):
         stack, and it's this constraint on not testing the value of the cell
         under the instruction pointer leaves us with the test for stack depth
         """
-        self.stack_depth += 1
         while True:
-            if self.buf[self.pointer] == 0 and self.stack_depth != 1:
-                self.stack_depth -= 1
+            if self.buf[self.pointer] == 0 and self.stack_depth:
                 break
             for i in stack:
                 if type(i) == list:
+                    self.stack_depth += 1
                     self.exec_stack(i)
+                    self.stack_depth -= 1
                 else:
                     i()
-            if self.stack_depth == 1:
+            if not self.stack_depth:
                 break
 
     def push(self, inst):
