@@ -30,6 +30,7 @@ class BF(object):
         self.pointer = 0
         self.buf = [0]
         self.stack = []
+        self.stack_depth = 0
         self.ref_stack = []
         self.current_loop = self.stack
         self.cmds = {
@@ -44,15 +45,19 @@ class BF(object):
             }
     def run(self):
         # This is basically the same logic, with a slight tweak
-        self.exec_stack(self.stack, topLevel=True)
-    def exec_stack(self, stack, topLevel=False):
-        while self.buf[self.pointer] != 0 or topLevel:
+        self.exec_stack(self.stack)
+    def exec_stack(self, stack):
+        self.stack_depth += 1
+        while True:
+            if self.buf[self.pointer] == 0 and self.stack_depth != 1:
+                self.stack_depth -= 1
+                break
             for i in stack:
                 if type(i) == list:
                     self.exec_stack(i)
                 else:
                     i()
-            if topLevel:
+            if self.stack_depth == 1:
                 break
 
     def push(self, inst):
