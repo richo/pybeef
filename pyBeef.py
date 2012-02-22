@@ -18,7 +18,8 @@ import sys
 # - Documentation?
 
 def usage():
-    pass
+    print("usage: %s file.bf" % sys.argv[0])
+    exit()
 class BF(object):
     """a brainfuck interpreter.
     Create your object, push a bunch of instructions (or hell, a whole source file)
@@ -59,18 +60,12 @@ class BF(object):
         if inst in self.cmds:
             self.cmds[inst]()
 
-# These are the methods which handle the physical structure of the stack
-# We guarantee that dumping code into self.current_loop will add it to the end
-# of the current execution
     def a_lo_enter(self):
         self.ref_stack.append(self.current_loop)
         self.current_loop.append([])
         self.current_loop = self.current_loop[-1]
     def a_lo_exit(self):
         self.current_loop = self.ref_stack.pop(-1)
-#
-# Really I could probably lambda these but it'd be unreadable
-#
     def sh_left(self):
         if self.pointer == 0:
             # This looks wrong at first, but remember that the pointer
@@ -82,8 +77,8 @@ class BF(object):
         if self.pointer == len(self.buf)-1:
             self.buf.append(0)
         self.pointer += 1
-# TODO: There is no official spec, but most suggest that these should wrap some point like a signed
-# int in C
+#   This should really implement a custom data structure like a doubly linked
+#   list so that it wraps after
     def po_add(self):
         self.buf[self.pointer] += 1
     def po_sub(self):
@@ -91,19 +86,22 @@ class BF(object):
     def po_out(self):
         sys.stdout.write(chr(self.buf[self.pointer]))
     def po_in(self):
-        # XXX I'm reasonably sure that this doesn't work.
+        # Pray noone gives us unicode
         self.buf[self.pointer] = ord(sys.stdin.read(1))
 
-def main(args):
+def main(source):
     obj = BF()
-    fh = open(args[0], 'r')
+    try:
+        fh = open(source, 'r')
+    except IOError as e:
+        print(e)
+        exit()
     for line in fh:
         for char in line:
             obj.push(char)
     obj.run()
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
+    if len(sys.argv) != 2:
         usage()
-        exit()
-    main(sys.argv[1:])
+    main(sys.argv[1])
