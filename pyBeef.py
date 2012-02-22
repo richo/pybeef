@@ -61,12 +61,24 @@ class BF(object):
             self.cmds[inst]()
 
     def a_lo_enter(self):
+        """Loop Enter
+        Creates a new stack, points current to it so that subsequent pushes
+        enter the new context
+        """
         self.ref_stack.append(self.current_loop)
         self.current_loop.append([])
         self.current_loop = self.current_loop[-1]
     def a_lo_exit(self):
+        """Loop Exit
+        Pop one level off the top of the execution stack, effectively unrolling
+        one layer
+        """
         self.current_loop = self.ref_stack.pop(-1)
     def sh_left(self):
+        """Shift Left
+        Shift the pointer one frame to the left, creating and initialising the
+        target cell with a value of zero if necessary
+        """
         if self.pointer == 0:
             # This looks wrong at first, but remember that the pointer
             # is not absolute... ;)
@@ -74,18 +86,37 @@ class BF(object):
         else:
             self.pointer -= 1
     def sh_right(self):
+        """Shift Right
+        Shift the pointer one frame to the right, creating and initialising the
+        target cell with a value of zero if necessary
+        """
         if self.pointer == len(self.buf)-1:
             self.buf.append(0)
         self.pointer += 1
-#   This should really implement a custom data structure like a doubly linked
-#   list so that it wraps after
+#   TODO: This should really implement a custom data structure like a doubly
+#   linked list so that it wraps after
+
+#   TODO: Flag or environment variable that wraps the values at 256 or somesuch
     def po_add(self):
+        """Increment
+        Increment the cell pointed to by the instruction pointer by one
+        """
         self.buf[self.pointer] += 1
     def po_sub(self):
+        """Decrememnt
+        Decrement the cell pointed to by the instruction pointer by one
+        """
         self.buf[self.pointer] -= 1
     def po_out(self):
+        """Output
+        Convert the current cell to an ascii character and write to stdout
+        """
         sys.stdout.write(chr(self.buf[self.pointer]))
     def po_in(self):
+        """Input
+        Retrieve a single byte from stdin, convert it to an integer, and store
+        in the current cell
+        """
         # Pray noone gives us unicode
         self.buf[self.pointer] = ord(sys.stdin.read(1))
 
