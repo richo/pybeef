@@ -19,7 +19,7 @@ import sys
 
 def usage():
     pass
-class bf(object):
+class BF(object):
     """a brainfuck interpreter.
     Create your object, push a bunch of instructions (or hell, a whole source file)
     to it with .push(instruction)
@@ -41,7 +41,7 @@ class bf(object):
                 "[": self.a_lo_enter,
                 "]": self.a_lo_exit
             }
-    def __call__(self):
+    def run(self):
         # This is basically the same logic, with a slight tweak
         self.exec_stack(self.stack, topLevel=True)
     def exec_stack(self, stack, topLevel=False):
@@ -95,12 +95,12 @@ class bf(object):
         self.buf[self.pointer] = ord(sys.stdin.read(1))
 
 def main(args):
-    obj = bf()
+    obj = BF()
     fh = open(args[0], 'r')
     for line in fh:
         for char in line:
             obj.push(char)
-    obj()
+    obj.run()
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
