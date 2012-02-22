@@ -44,9 +44,19 @@ class BF(object):
                 "]": self.a_lo_exit
             }
     def run(self):
-        # This is basically the same logic, with a slight tweak
+        """Commence execution
+        """
+        # TODO The implementation insinates that you should be able to push a
+        # stack of insctructions, run them, add some more and then run them. If
+        # you try that, you'll get both sets of instructions the second tme.
         self.exec_stack(self.stack)
     def exec_stack(self, stack):
+        """Recursively executute a stack
+        A stack is basically defined as a series of commands nested inside a
+        set of loop operators, however the toplevel program is contained with a
+        stack, and it's this constraint on not testing the value of the cell
+        under the instruction pointer leaves us with the test for stack depth
+        """
         self.stack_depth += 1
         while True:
             if self.buf[self.pointer] == 0 and self.stack_depth != 1:
